@@ -1,5 +1,5 @@
 {
-    "name": "beekirr/centrifugal-client",
+    "name": "beekirr/centrifugal-php-client",
     "description":"Php library to communicate with Centrifugo/Centrifuge)",
     "keywords": [
         "centrifugo",
