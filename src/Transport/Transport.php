@@ -1,28 +1,15 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: sl4mmer
- * Date: 07.10.14
- * Time: 15:29
- */
 
-namespace phpcent;
+namespace CentrifugalClient\Transport;
 
-class Transport implements ITransport
+class Transport implements TransportInterface
 {
-    const SAFE = 1;
-    const UNSAFE = 2;
-
-    protected static $safety = self::SAFE;
-
     /**
-     * @var string Certificate file name
-     * @since 1.0.5
+     * @var string|null Certificate file name
      */
     private $cert;
     /**
-     * @var string Directory containing CA certificates
-     * @since 1.0.5
+     * @var string|null Directory containing CA certificates
      */
     private $caPath;
 
@@ -37,23 +24,19 @@ class Transport implements ITransport
     private $timeoutOption;
 
     /**
-     * @param mixed $safety
-     */
-    public static function setSafety($safety)
-    {
-        self::$safety = $safety;
-    }
-
-    /**
      *
      * @param string $host
-     * @param mixed $data
+     * @param array $data
      * @return mixed
      * @throws TransportException
      */
-    public function communicate($host, $data)
+    public function communicate(string $host, array $data)
     {
         $ch = curl_init("$host/api/");
+
+        if (!$ch) {
+            throw new TransportException('CURL init failure');
+        }
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
@@ -65,35 +48,32 @@ class Transport implements ITransport
             curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeoutOption);
         }
 
-        if (self::$safety === self::UNSAFE) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        } elseif (self::$safety === self::SAFE) {
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 
-            if (null !== $this->cert) {
-                curl_setopt($ch, CURLOPT_CAINFO, $this->cert);
-            }
-            if (null !== $this->caPath) {
-                curl_setopt($ch, CURLOPT_CAPATH, $this->caPath);
-            }
+        if (null !== $this->cert) {
+            curl_setopt($ch, CURLOPT_CAINFO, $this->cert);
+        }
+        if (null !== $this->caPath) {
+            curl_setopt($ch, CURLOPT_CAPATH, $this->caPath);
         }
 
         $postData = http_build_query($data, '', '&');
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
 
+        /** @var string $response */
         $response = curl_exec($ch);
         $error = curl_error($ch);
         $headers = curl_getinfo($ch);
         curl_close($ch);
 
-        if (empty($headers["http_code"]) || ($headers["http_code"] != 200)) {
-            throw new TransportException ("Response code: "
-                . $headers["http_code"]
+        if (empty($headers['http_code']) || ($headers['http_code'] !== 200)) {
+            throw new TransportException(
+                'Response code: '
+                . $headers['http_code']
                 . PHP_EOL
-                . "cURL error: " . $error . PHP_EOL
-                . "Body: "
+                . 'cURL error: ' . $error . PHP_EOL
+                . 'Body: '
                 . $response
             );
         }
@@ -105,7 +85,7 @@ class Transport implements ITransport
      * @return string|null
      * @since 1.0.5
      */
-    public function getCert()
+    public function getCert(): ?string
     {
         return $this->cert;
     }
@@ -114,7 +94,7 @@ class Transport implements ITransport
      * @param string|null $cert
      * @since 1.0.5
      */
-    public function setCert($cert)
+    public function setCert($cert): void
     {
         $this->cert = $cert;
     }
@@ -123,7 +103,7 @@ class Transport implements ITransport
      * @return string|null
      * @since 1.0.5
      */
-    public function getCAPath()
+    public function getCAPath(): ?string
     {
         return $this->caPath;
     }
@@ -132,7 +112,7 @@ class Transport implements ITransport
      * @param string|null $caPath
      * @since 1.0.5
      */
-    public function setCAPath($caPath)
+    public function setCAPath($caPath): void
     {
         $this->caPath = $caPath;
     }
@@ -140,7 +120,7 @@ class Transport implements ITransport
     /**
      * @return int|null
      */
-    public function getConnectTimeoutOption()
+    public function getConnectTimeoutOption(): ?int
     {
         return $this->connectTimeoutOption;
     }
@@ -148,30 +128,24 @@ class Transport implements ITransport
     /**
      * @return int|null
      */
-    public function getTimeoutOption()
+    public function getTimeoutOption(): ?int
     {
         return $this->timeoutOption;
     }
 
     /**
      * @param int|null $connectTimeoutOption
-     * @return Transport
      */
-    public function setConnectTimeoutOption($connectTimeoutOption)
+    public function setConnectTimeoutOption($connectTimeoutOption): void
     {
         $this->connectTimeoutOption = $connectTimeoutOption;
-
-        return $this;
     }
 
     /**
      * @param int|null $timeoutOption
-     * @return Transport
      */
-    public function setTimeoutOption($timeoutOption)
+    public function setTimeoutOption($timeoutOption): void
     {
         $this->timeoutOption = $timeoutOption;
-
-        return $this;
     }
 }
