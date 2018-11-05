@@ -1,6 +1,6 @@
 <?php
 
-namespace CentrifugalClient\HashGenerator;
+namespace Centrifuge\HashGenerator;
 
 interface HashGeneratorInterface
 {

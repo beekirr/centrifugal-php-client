@@ -1,6 +1,6 @@
 <?php
 
-namespace CentrifugalClient\Transport;
+namespace Centrifuge\Transport;
 
 class Transport implements TransportInterface
 {

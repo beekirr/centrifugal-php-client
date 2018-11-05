@@ -1,11 +1,11 @@
 <?php
 
-namespace CentrifugalClient\Client;
+namespace Centrifuge\Client;
 
-use CentrifugalClient\HashGenerator\HashGenerator;
-use CentrifugalClient\HashGenerator\HashGeneratorInterface;
-use CentrifugalClient\Transport\Transport;
-use CentrifugalClient\Transport\TransportInterface;
+use Centrifuge\HashGenerator\HashGenerator;
+use Centrifuge\HashGenerator\HashGeneratorInterface;
+use Centrifuge\Transport\Transport;
+use Centrifuge\Transport\TransportInterface;
 
 class Client implements ClientInterface
 {
@@ -168,7 +168,7 @@ class Client implements ClientInterface
         );
 
         if (!$data) {
-            throw new CentrifugalClientException('JSON message encoding failure');
+            throw new CentrifugeClientException('JSON message encoding failure');
         }
 
         return $this->transport->communicate(

@@ -1,6 +1,6 @@
 <?php
 
-namespace CentrifugalClient\Client;
+namespace Centrifuge\Client;
 
 interface ClientInterface
 {

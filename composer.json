@@ -1,8 +1,10 @@
 {
-    "name": "beekirr/centrifugal-php-client",
+    "name": "beekirr/centrifuge-php",
     "description":"Php library to communicate with Centrifugo/Centrifuge)",
     "keywords": [
         "centrifugo",
+        "centrifuge",
+        "centrifuge-php",
         "centrifugal",
         "phpcent"
     ],
@@ -11,7 +13,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "CentrifugalClient\\": "src"
+            "Centrifuge\\": "src"
         }
     },
     "require":{
