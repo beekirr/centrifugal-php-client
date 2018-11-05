@@ -1,5 +1,5 @@
-Phpcent
-========
+# centrifuge-php 
+[![Build Status](https://travis-ci.org/beekirr/centrifuge-php.svg?branch=master)](https://travis-ci.org/beekirr/centrifuge-php)
 
 Php library to communicate with Centrifugo HTTP API.
 
